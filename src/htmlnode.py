@@ -8,14 +8,11 @@ class HTMLNode:
     """
     def __init__(self,tag=None ,value=None ,children=None,props=None):
         """
-        :param tag:A string representing the HTML tag name
-        :type str
-        :param value: A string representing the value of the HTML tag
-        :type str
-        :param children :A list of HTMLNode objects representing the children of this node
-        :type list
-        :param props: A dictionary of key-value pairs representing the attributes of the HTML tag. For example, a link (<a> tag) might have {"href": "https://www.google.com"}
-        :type dict
+        Args:
+            tag (str,optional): A string representing the HTML tag name
+            value (str,optional): A string representing the value of the HTML tag
+            children(list,optional) : A list of HTMLNode objects representing the children of this node
+            props (dict,optional) : A dictionary of key-value pairs representing the attributes of the HTML tag. For example, a link (<a> tag) might have {"href": "https://www.google.com"}
         """
         self.tag=tag
         self.value=value

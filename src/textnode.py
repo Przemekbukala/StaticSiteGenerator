@@ -40,6 +40,8 @@ class TextNode:
 
 
 
+
+def text_node_to_html_node(text_node):
     """
     Handle each type of the TextType enum.
     If it gets a TextNode that is none of those types, it  raise an exception.
@@ -47,7 +49,6 @@ class TextNode:
     :param text_node: TextNode object.
     :return: new LeafNode object.
     """
-def text_node_to_html_node(text_node):
     if type(text_node) != TextNode:
         raise TypeError("It`s not TextType")
     else:
