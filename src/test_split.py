@@ -5,15 +5,15 @@ from split import *
 
 class TestSplit(unittest.TestCase):
     def setUp(self):
-        self.node_test = TextNode("This is 'kod' a text node", TextType.PLAIN_TEXT)
-        self.node_test_2 = TextNode("This is 'kod a text node'", TextType.PLAIN_TEXT)
+        self.node_test = TextNode("This is `kod` a text node", TextType.PLAIN_TEXT)
+        self.node_test_2 = TextNode("This is `kod a text node`", TextType.PLAIN_TEXT)
         self.node_test_3 = TextNode("This is text with a **bolded phrase** in the middle", TextType.PLAIN_TEXT)
         self.node_test_4 = TextNode("This is text with a **bolded phrase in the middle**", TextType.PLAIN_TEXT)
         self.node_test_wrong_text_type = TextNode("This is text with a **bolded phrase** in the middle", TextType.IMAGE)
 
 
-        self.new_list = split_nodes_delimiter([self.node_test], "'", TextType.CODE_TEXT)
-        self.new_list_v2 = split_nodes_delimiter([self.node_test_2], "'", TextType.CODE_TEXT)
+        self.new_list = split_nodes_delimiter([self.node_test], "`", TextType.CODE_TEXT)
+        self.new_list_v2 = split_nodes_delimiter([self.node_test_2], "`", TextType.CODE_TEXT)
         self.new_list_v3 = split_nodes_delimiter([self.node_test_3], "**", TextType.BOLD_TEXT)
         self.new_list_big_one = split_nodes_delimiter([self.node_test_3,self.node_test_4], "**", TextType.BOLD_TEXT)
         self.new_list_wrong_text_type= split_nodes_delimiter([self.node_test_wrong_text_type], "**", TextType.BOLD_TEXT)
@@ -117,6 +117,24 @@ class TestSplit(unittest.TestCase):
              TextNode(" and another one ", TextType.PLAIN_TEXT),
              TextNode("second link", TextType.LINK, "https://www.agh.edu.pl/"),
             ],new_nodes,)
+
+    def test_split_multiple_types(self):
+        lista = text_to_textnodes(
+            "This is **text** with an _italic_ word and a `code block` and an ![Jupiter's Fuzzy Core](https://imgur.com/gallery/jupiters-fuzzy-core-bU2aUnU) and a [link](https://www.google.com/?hl=pl)")
+        self.assertListEqual(
+            [
+                TextNode("This is ", TextType.PLAIN_TEXT),
+                TextNode("text", TextType.BOLD_TEXT),
+                TextNode(" with an ", TextType.PLAIN_TEXT),
+                TextNode("italic", TextType.ITALIC_TEXT),
+                TextNode(" word and a ", TextType.PLAIN_TEXT),
+                TextNode("code block", TextType.CODE_TEXT),
+                TextNode(" and an ", TextType.PLAIN_TEXT),
+                TextNode("Jupiter's Fuzzy Core", TextType.IMAGE, "https://imgur.com/gallery/jupiters-fuzzy-core-bU2aUnU"),
+                TextNode(" and a ", TextType.PLAIN_TEXT),
+                TextNode("link", TextType.LINK, "https://www.google.com/?hl=pl"),
+            ]
+            , lista, )
 
 if __name__ == "__main__":
     unittest.main()

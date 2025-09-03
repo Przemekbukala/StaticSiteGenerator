@@ -1,3 +1,6 @@
+from idlelib.autocomplete import FORCE
+from warnings import catch_warnings
+
 from textnode import *
 import re
 def split_nodes_delimiter(old_nodes : list[TextNode], delimiter: str, text_type : TextType):
@@ -78,6 +81,8 @@ def split_nodes_image(old_nodes: list[TextNode]):
                 new_list.append(TextNode(image[0], TextType.IMAGE, image[1]))
                 text_to_extract=extracted_text[1]
             # print(extracted_text)
+        if len(text_to_extract)!=0:
+            new_list.append(TextNode(text_to_extract, TextType.PLAIN_TEXT))
     if len(new_list)==0:
         return  old_nodes
     return new_list
@@ -114,10 +119,56 @@ def split_nodes_link(old_nodes):
             else:
                 new_list.append(TextNode(link[0], TextType.LINK, link[1]))
                 text_to_extract=extracted_text[1]
+        # in order to not to miss last part of the text_to_extract  in last iteration.
+        if len(text_to_extract) != 0:
+            new_list.append(TextNode(text_to_extract, TextType.PLAIN_TEXT))
     if len(new_list)==0:
         return  old_nodes
     return new_list
 
+def text_to_textnodes(text : str):
+    """
+     This function put all the "splitting" functions together into a function that can convert a raw string of markdown-flavored text into a list of TextNode objects.
+    :param text:
+    :type: str
+    :return: list of nodes.
+    :type: list[TextNode]
+    """
+    node=TextNode(text,TextType.PLAIN_TEXT)
+    new_list=[node]
+    temp=[]
+    for node in new_list:
+        try:
+            temp_list=split_nodes_delimiter([node],"`",TextType.CODE_TEXT)
+            temp.extend(temp_list)
+        except:
+            temp.extend([node])
+    new_list=temp
+
+    temp=[]
+    for node in new_list:
+        try:
+            temp_list = split_nodes_delimiter([node], "**", TextType.BOLD_TEXT)
+            temp.extend(temp_list)
+        except:
+            temp.extend([node])
+            continue
+    new_list = temp
+    temp=[]
+    for node in new_list:
+        try:
+            temp_list = split_nodes_delimiter([node], "_", TextType.ITALIC_TEXT)
+            temp.extend(temp_list)
+        except:
+            temp.extend([node])
+    new_list = temp
+    new_list=split_nodes_link(new_list)
+    new_list=split_nodes_image(new_list)
+    return  new_list
 
 if __name__=="__main__":
-    pass
+    lista=text_to_textnodes("This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)")
+    print(lista)
+    # test=TextNode( "and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a", TextType.PLAIN_TEXT, None);
+    # print(split_nodes_image([test]))
+
