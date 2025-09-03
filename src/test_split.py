@@ -42,5 +42,81 @@ class TestSplit(unittest.TestCase):
         match_2=extract_markdown_links(text)
         self.assertListEqual([('google', 'https://www.google.com/?hl=pl'), ('AGH', 'https://www.agh.edu.pl/')],match_1)
         self.assertListEqual([('Leonardo DiCaprio', 'https://www.filmweb.pl/person/Leonardo+DiCaprio-30/filmography'), ('Youtube', 'https://www.youtube.com')],match_2)
+
+    def test_split_images(self):
+        node = TextNode(
+            "This is text with an ![image](test.png) and another one ![second image](test2.png)",
+            TextType.PLAIN_TEXT,)
+        new_nodes = split_nodes_image([node])
+        self.assertListEqual(
+            [
+                TextNode("This is text with an ", TextType.PLAIN_TEXT),
+                TextNode("image", TextType.IMAGE, "test.png"),
+                TextNode(" and another one ", TextType.PLAIN_TEXT),
+                TextNode("second image", TextType.IMAGE, "test2.png"),
+            ],new_nodes,)
+        node_2 = TextNode("![image](test.png) and another one ![second image](test2.png)",TextType.PLAIN_TEXT, )
+        new_nodes = split_nodes_image([node_2])
+        self.assertListEqual(
+            [
+                TextNode("image", TextType.IMAGE, "test.png"),
+                TextNode(" and another one ", TextType.PLAIN_TEXT),
+                TextNode("second image", TextType.IMAGE, "test2.png"),
+            ],new_nodes,)
+
+        node_without_img = TextNode(
+            "This is text with no img ",
+            TextType.PLAIN_TEXT,)
+        new_nodes = split_nodes_image([node_without_img])
+        self.assertListEqual([TextNode("This is text with no img ", TextType.PLAIN_TEXT),],new_nodes,)
+        #
+        new_nodes = split_nodes_image([node_without_img,node_2])
+        self.assertListEqual(
+            [TextNode("This is text with no img ", TextType.PLAIN_TEXT),
+                TextNode("image", TextType.IMAGE, "test.png"),
+                TextNode(" and another one ", TextType.PLAIN_TEXT),
+                TextNode("second image", TextType.IMAGE, "test2.png"),
+            ],new_nodes,)
+
+
+
+    def test_split_links(self):
+        node = TextNode(
+            "This is text with an [link](https://www.google.com/?hl=pl) and another one [second link](https://www.agh.edu.pl/)",
+            TextType.PLAIN_TEXT, )
+        new_nodes = split_nodes_link([node])
+        self.assertListEqual(
+            [
+                TextNode("This is text with an ", TextType.PLAIN_TEXT),
+                TextNode("link", TextType.LINK, "https://www.google.com/?hl=pl"),
+                TextNode(" and another one ", TextType.PLAIN_TEXT),
+                TextNode("second link", TextType.LINK, "https://www.agh.edu.pl/"),
+            ], new_nodes, )
+
+        node_2 = TextNode("[link](https://www.google.com/?hl=pl) and another one [second link](https://www.agh.edu.pl/)", TextType.PLAIN_TEXT, )
+        new_nodes = split_nodes_link([node_2])
+        self.assertListEqual(
+            [
+                TextNode("link", TextType.LINK, "https://www.google.com/?hl=pl"),
+                TextNode(" and another one ", TextType.PLAIN_TEXT),
+                TextNode("second link", TextType.LINK, "https://www.agh.edu.pl/"),
+            ], new_nodes, )
+
+        node_without_link = TextNode(
+            "This is text with no link ",
+            TextType.PLAIN_TEXT,)
+        new_nodes = split_nodes_link([node_without_link])
+
+        self.assertListEqual(
+            [TextNode("This is text with no link ", TextType.PLAIN_TEXT)],new_nodes)
+
+        new_nodes = split_nodes_link([node_without_link,node_2])
+        self.assertListEqual(
+            [TextNode("This is text with no link ", TextType.PLAIN_TEXT),
+             TextNode("link", TextType.LINK, "https://www.google.com/?hl=pl"),
+             TextNode(" and another one ", TextType.PLAIN_TEXT),
+             TextNode("second link", TextType.LINK, "https://www.agh.edu.pl/"),
+            ],new_nodes,)
+
 if __name__ == "__main__":
     unittest.main()
