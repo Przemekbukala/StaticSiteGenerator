@@ -55,7 +55,7 @@ def split_nodes_image(old_nodes: list[TextNode]):
     Behave very similarly to split_nodes_delimiter.
     It takes a list of "old nodes" where any "text" type nodes in the input list are  split into multiple nodes.
     It uses extract_markdown_images  to extract alt text and the URL of  markdown image.
-    :param : old_nodes
+    :param old_nodes:
     :type: list[TextNode]
     :return: new list of nodes.
     :type: list[TextNode]
