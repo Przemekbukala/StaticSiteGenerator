@@ -110,11 +110,17 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path,base
     for i in dir_list:
         full_path=os.path.join(dir_path_content,i)
         if os.path.isfile(full_path) and full_path[-2:]=='md':
-            generate_page(full_path, template_path, f"{dest_dir_path}/{full_path[:-2]}html")
+            # special case: index.md in the main root of content
+            if os.path.basename(full_path) == "index.md" and os.path.dirname(full_path) == "content":
+                dest_file = os.path.join(dest_dir_path, "index.html")
+            else:
+                dest_file = os.path.join(dest_dir_path, full_path[:-2] + "html")
+            generate_page(full_path, template_path, dest_file, basepath)
         elif os.path.isdir(full_path):
-            generate_pages_recursive(full_path,template_path,dest_dir_path)
+            generate_pages_recursive(full_path,template_path,dest_dir_path,basepath)
 
 if __name__=="__main__":
     copy_static()
     basepath = sys.argv[1] if len(sys.argv) > 1 else "/"
+    basepath = "/"
     generate_pages_recursive('content','template.html','docs',basepath)
