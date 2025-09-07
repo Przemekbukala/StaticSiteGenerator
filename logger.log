@@ -1,7 +1,7 @@
-2025-09-07 18:57:25,221 Deleting all the contents of the docs directory
-2025-09-07 18:57:25,222 Making directory docs/images
-2025-09-07 18:57:25,222 Coping file static/images/tolkien.png
-2025-09-07 18:57:25,222 Coping file static/images/tom.png
-2025-09-07 18:57:25,223 Coping file static/images/glorfindel.png
-2025-09-07 18:57:25,223 Coping file static/images/rivendell.png
-2025-09-07 18:57:25,223 Coping file static/index.css
+2025-09-07 19:00:41,663 Deleting all the contents of the docs directory
+2025-09-07 19:00:41,664 Making directory docs/images
+2025-09-07 19:00:41,664 Coping file static/images/tolkien.png
+2025-09-07 19:00:41,664 Coping file static/images/tom.png
+2025-09-07 19:00:41,664 Coping file static/images/glorfindel.png
+2025-09-07 19:00:41,665 Coping file static/images/rivendell.png
+2025-09-07 19:00:41,665 Coping file static/index.css

@@ -122,5 +122,5 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path,base
 if __name__=="__main__":
     copy_static()
     basepath = sys.argv[1] if len(sys.argv) > 1 else "/"
-    basepath = "/"
+    # basepath = "/"
     generate_pages_recursive('content','template.html','docs',basepath)
