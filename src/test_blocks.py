@@ -1,6 +1,7 @@
 import unittest
 from traceback import print_tb
 
+from src.main import extract_title
 from textnode import TextNode, TextType
 from  textnode import  text_node_to_html_node
 from blocks import *
@@ -85,8 +86,6 @@ This is the same paragraph on a new line
         html = test.to_html()
         self.assertEqual(html,heading_to_test)
 
-
-
     def test_codeblock(self):
         md = """```This is text that _should_ remain \nthe **same** even with inline stuff\n```"""
         node = markdown_to_html_node(md)
@@ -94,6 +93,13 @@ This is the same paragraph on a new line
         self.assertEqual(
             html,
             "<div><pre><code>This is text that _should_ remain \nthe **same** even with inline stuff\n</code></pre></div>",)
+
+    def extract_title_test(self):
+        string_to_test="# Hello"
+        title=extract_title("# Hello")
+        self.assertEqual(title,"Hello")
+        self.assertRaises(ValueError, extract_title, "No header here")
+
 
 if __name__ == "__main__":
     unittest.main()

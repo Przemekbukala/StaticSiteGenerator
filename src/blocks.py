@@ -118,30 +118,31 @@ def text_to_children(text :str):
         text_nodes_list.extend(text_to_textnodes(line))
     parent_node : ParentNode
 
-    for text_node in text_nodes_list:
-            html_node=text_node_to_html_node(text_node)
-            html_nodes.append(html_node)
     if block_type == BlockType.unordered_list:
-        for i in html_nodes:
-            i.tag='li'
-            i.value=i.value[2:]
-            i : HTMLNode
-        parent_node = (ParentNode('ul', html_nodes))
-        return [parent_node]
+        li_nodes = []
+        for line in text.split("\n"):
+            content = line[2:]
+            text_nodes = text_to_textnodes(content)
+            html_nodes = [text_node_to_html_node(n) for n in text_nodes]
+            li_nodes.append(ParentNode("li", html_nodes))
+        return [ParentNode("ul", li_nodes)]
     if block_type == BlockType.ordered_list:
-        for i in html_nodes:
-            i.tag='li'
-            i.value=i.value[3:]
-
-        parent_node = (ParentNode('ol', html_nodes))
-        return [parent_node]
+        li_nodes = []
+        for line in text.split("\n"):
+            content = line.split(". ", 1)[1]
+            text_nodes = text_to_textnodes(content)
+            html_nodes = [text_node_to_html_node(n) for n in text_nodes]
+            li_nodes.append(ParentNode("li", html_nodes))
+        return [ParentNode("ol", li_nodes)]
     if block_type == BlockType.heading:
-        for i in html_nodes:
-            count=i.value.count('#', 0, 8)
-            i.tag=f'h{count}'
-            i.value=i.value[count+1:]
-
-        return html_nodes
+        heading_nodes = []
+        for line in text.split("\n"):
+            count = len(line) - len(line.lstrip("#"))
+            content = line[count + 1:]
+            text_nodes = text_to_textnodes(content)
+            html_nodes = [text_node_to_html_node(n) for n in text_nodes]
+            heading_nodes.append(ParentNode(f"h{count}", html_nodes))
+        return heading_nodes
     return []
 def markdown_to_html_node(markdown :str):
     """
@@ -160,3 +161,4 @@ def markdown_to_html_node(markdown :str):
 
 if '__main__'==__name__:
     pass
+

@@ -1,5 +1,7 @@
-2025-09-07 12:39:32,839 Deleting all the contents of the public directory
-2025-09-07 12:39:32,839 Coping file static/tolkien.png
-2025-09-07 12:39:32,839 Making directory public/dsdsds
-2025-09-07 12:39:32,839 Coping file static/dsdsds/sdsdds
-2025-09-07 12:39:32,839 Coping file static/index.css
+2025-09-07 18:25:04,132 Deleting all the contents of the docs directory
+2025-09-07 18:25:04,132 Making directory docs/images
+2025-09-07 18:25:04,133 Coping file static/images/tolkien.png
+2025-09-07 18:25:04,133 Coping file static/images/tom.png
+2025-09-07 18:25:04,133 Coping file static/images/glorfindel.png
+2025-09-07 18:25:04,133 Coping file static/images/rivendell.png
+2025-09-07 18:25:04,134 Coping file static/index.css
