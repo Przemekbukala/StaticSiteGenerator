@@ -1,13 +1,13 @@
-from idlelib.autocomplete import FORCE
-from warnings import catch_warnings
-
 from textnode import *
 import re
-def split_nodes_delimiter(old_nodes : list[TextNode], delimiter: str, text_type : TextType):
+import logging
+from logger_config import logger
+
+logger = logging.getLogger(__name__)
+
+def split_nodes_delimiter(old_nodes : list[TextNode], delimiter: str, text_type : TextType) ->list[TextNode]:
     """ It takes a list of "old nodes", a delimiter, and a text type,
         where any "text" type nodes in the input list are (potentially) split into multiple nodes based on the syntax.
-        :return: new list of nodes
-        :type: list[TextNode]
     """
     node: TextNode
     new_list=[]
@@ -16,7 +16,6 @@ def split_nodes_delimiter(old_nodes : list[TextNode], delimiter: str, text_type 
             new_list.append(node)
             continue
         splited_text=node.text.split(delimiter)
-         #there is 3 cases, in which we could get from 1 to 3 nodes.
         if len(splited_text)==1 or len(splited_text)==2:
             raise Exception("Invalid Markdown syntax")
         if len(splited_text[0])==0 and len(splited_text[2])==0:
@@ -32,33 +31,21 @@ def split_nodes_delimiter(old_nodes : list[TextNode], delimiter: str, text_type 
 def extract_markdown_images(text : str):
     """
      Returns a list of tuples. Each tuple should contain the alt text and the URL of any markdown images
-        :param text: Raw markdown text.
-        :type: str
-        :return: List of tuples. Each tuple should contain the alt text and the URL of any markdown images.
-        :type: list
     """
     return re.findall(r"!\[([^\[\]]*)\]\(([^\(\)]*)\)", text)
 
-def extract_markdown_links(text):
+def extract_markdown_links(text: str):
     """
     (Similar function to extract_markdown_images)
      Returns a list of tuples. Each tuple should contain the alt text and the URL of any markdown links
-        :param text: Raw markdown text.
-        :type: str
-        :return: List of tuples. Each tuple should contain the alt text and the URL of any markdown links.
-        :type: list
     """
     return re.findall(r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)", text)
 
-def split_nodes_image(old_nodes: list[TextNode]):
+def split_nodes_image(old_nodes: list[TextNode])-> list[TextNode]:
     """
     Behave very similarly to split_nodes_delimiter.
     It takes a list of "old nodes" where any "text" type nodes in the input list are  split into multiple nodes.
     It uses extract_markdown_images  to extract alt text and the URL of  markdown image.
-    :param old_nodes:
-    :type: list[TextNode]
-    :return: new list of nodes.
-    :type: list[TextNode]
     """
     node: TextNode
     new_list = []
@@ -119,20 +106,15 @@ def split_nodes_link(old_nodes):
             else:
                 new_list.append(TextNode(link[0], TextType.LINK, link[1]))
                 text_to_extract=extracted_text[1]
-        # in order to not to miss last part of the text_to_extract  in last iteration.
         if len(text_to_extract) != 0:
             new_list.append(TextNode(text_to_extract, TextType.PLAIN_TEXT))
     if len(new_list)==0:
         return  old_nodes
     return new_list
 
-def text_to_textnodes(text : str):
+def text_to_textnodes(text : str) -> list[TextNode]:
     """
      This function put all the "splitting" functions together into a function that can convert a raw string of markdown-flavored text into a list of TextNode objects.
-    :param text:
-    :type: str
-    :return: list of nodes.
-    :type: list[TextNode]
     """
     node=TextNode(text,TextType.PLAIN_TEXT)
     new_list=[node]
@@ -168,7 +150,5 @@ def text_to_textnodes(text : str):
 
 if __name__=="__main__":
     lista=text_to_textnodes("This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)")
-    print(lista)
-    # test=TextNode( "and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a", TextType.PLAIN_TEXT, None);
-    # print(split_nodes_image([test]))
+    logger.info(lista)
 

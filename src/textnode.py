@@ -7,6 +7,9 @@ class TextType(Enum):
     CODE_TEXT="code"
     LINK="link"
     IMAGE="image"
+from logger_config import logger
+import logging
+logger = logging.getLogger(__name__)
 
 class TextNode:
     def __init__(self,text,text_type,url=None):
@@ -74,6 +77,6 @@ if __name__=="__main__":
 
     node = TextNode("This is a text node", TextType.PLAIN_TEXT)
     html_node = text_node_to_html_node(node)
-    # print(html_node.to_html())
+    logger.info(html_node.to_html())
 
 

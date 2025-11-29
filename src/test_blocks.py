@@ -1,9 +1,5 @@
 import unittest
-from traceback import print_tb
-
 from src.main import extract_title
-from textnode import TextNode, TextType
-from  textnode import  text_node_to_html_node
 from blocks import *
 class TestBlocks(unittest.TestCase):
     def test_markdown_to_blocks(self):

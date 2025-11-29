@@ -1,5 +1,4 @@
 from enum import Enum
-
 from split import text_to_textnodes
 from textnode import text_node_to_html_node, TextNode
 from htmlnode import *
@@ -12,26 +11,21 @@ class BlockType(Enum):
     unordered_list="unordered_list"
     ordered_list="ordered_list"
 
-def markdown_to_blocks(markdown : str):
+def markdown_to_blocks(markdown : str) -> list[str]:
     """
     The separation of different sections of an entire document.
     Blocks are separated by a single blank line.
-    :param markdown:  a raw Markdown string
-    :type: str
-    :return: List of "block" strings.
-    :type: list[str]
     """
     blocks=[ i.strip()   for  i in markdown.split('\n\n') if i.strip()]
     return  blocks
+
 def block_to_block_type(block : str):
     """
-    Takes a single block of markdown text as input and returns the BlockType representing the type of block it is.
+    Takes a single block of Markdown text as input and returns the BlockType representing the type of block it is.
     """
     lines_to_check=block.split("\n")
     if block.startswith("```") and block.endswith("```"):
         return BlockType.code
-    # NOT OPTIMAL SOLUTION O(N^2)
-    #checking heading type
     flaga=0
     for line in lines_to_check:
         if line.startswith(('# ', '## ', '### ', '#### ', '##### ', '###### ')):
@@ -44,7 +38,6 @@ def block_to_block_type(block : str):
             break
     if flaga == len(lines_to_check):
         return BlockType.heading
-    #checking quote type
     flaga=0
     for line in lines_to_check:
         if line.startswith(">"):
@@ -56,7 +49,6 @@ def block_to_block_type(block : str):
             break
     if flaga == len(lines_to_check):
         return BlockType.quote
-    #checking unordered_list type
     flaga=0
     for line in lines_to_check:
         if line.startswith("- "):
@@ -68,7 +60,6 @@ def block_to_block_type(block : str):
             break
     if flaga == len(lines_to_check):
         return BlockType.unordered_list
-    #checking ordered_list type
     flaga=1
     for line in lines_to_check:
         if line.startswith(f"{flaga}. "):
@@ -80,17 +71,15 @@ def block_to_block_type(block : str):
             break
     if flaga == len(lines_to_check)+1:
         return BlockType.ordered_list
-    # Default solution
     return BlockType.paragraph
 
 def text_to_children(text :str):
     """
     Function takes a string of text and returns a list of HTMLNodes that represent the inline markdown using previously created functions (text_to_textnodes,text_node_to_html_node).
-    The "code" block is a bit of a special case, becasue it should not do any inline markdown parsing of its children, so it`s made manually.
+    The "code" block is a bit of a special case because it should not do any inline markdown parsing of its children, so it`s made manually.
     :return: list of HTMLNodes
     :type: list[HTMLNode]
     """
-    # we check the block type of the text
     block_type=block_to_block_type(text)
     text_nodes_list=[]
     html_nodes = []
@@ -113,7 +102,6 @@ def text_to_children(text :str):
         parent_node = ParentNode('blockquote', html_nodes)
         return [parent_node]
 
-    # checking cases (BlockType.unordered_list,BlockType.ordered_list,BlockType.heading)
     for line in text.split('\n'):
         text_nodes_list.extend(text_to_textnodes(line))
     parent_node : ParentNode
@@ -144,14 +132,14 @@ def text_to_children(text :str):
             heading_nodes.append(ParentNode(f"h{count}", html_nodes))
         return heading_nodes
     return []
+
 def markdown_to_html_node(markdown :str):
     """
      Converts a full Markdown document into a single parent HTMLNode.
-    Based on the type of block (BlockType), this function create a new HTMLNode with the proper data.
+    Based on the type of block (BlockType), this function creates a new HTMLNode with the proper data.
     :return: parent HTMLNode.
     :type: ParentNode
     """
-    # Firstly, we split the markdown into blocks
     blocks=markdown_to_blocks(markdown)
     hmtl_nodes=[]
     for block in blocks:
