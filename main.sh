@@ -1,7 +1,7 @@
 #!/bin/bash
 DIR=${1:-'/StaticSiteGenerator/'}
 python3 src/main.py "$DIR"
-if [ "$BASEPATH" = "/" ]; then
+if [ "$1" = "/" ]; then
     echo "Running local server at http://0.0.0.0:8888"
     cd docs && python3 -m http.server 8888
 else
